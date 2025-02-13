@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"sync"
 )
 
 func main() {
@@ -23,16 +24,35 @@ func main() {
 		return
 	}
 
-	// Search in provided files
+	// Create a channel to collect results
+	results := make(chan string)
+	var wg sync.WaitGroup
+
+	// Search in provided files concurrently
 	for _, filename := range flag.Args() {
-		searchFile(*pattern, filename)
+		wg.Add(1)
+		go func(file string) {
+			defer wg.Done()
+			searchFileParallel(*pattern, file, results)
+		}(filename)
+	}
+
+	// Close results channel when all searches are done
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
+
+	// Print results as they come in
+	for result := range results {
+		fmt.Print(result)
 	}
 }
 
-func searchFile(pattern, filename string) {
+func searchFileParallel(pattern, filename string, results chan<- string) {
 	file, err := os.Open(filename)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error opening file %s: %v\n", filename, err)
+		results <- fmt.Sprintf("Error opening file %s: %v\n", filename, err)
 		return
 	}
 	defer file.Close()
@@ -42,13 +62,13 @@ func searchFile(pattern, filename string) {
 	for scanner.Scan() {
 		line := scanner.Text()
 		if strings.Contains(line, pattern) {
-			fmt.Printf("%s:%d:%s\n", filename, lineNum, line)
+			results <- fmt.Sprintf("%s:%d:%s\n", filename, lineNum, line)
 		}
 		lineNum++
 	}
 
 	if err := scanner.Err(); err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading file %s: %v\n", filename, err)
+		results <- fmt.Sprintf("Error reading file %s: %v\n", filename, err)
 	}
 }
 
