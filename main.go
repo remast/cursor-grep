@@ -67,7 +67,8 @@ func searchFileParallel(pattern, filename string, results chan<- string) {
 		lineNum++
 	}
 
-	if err := scanner.Err(); err != nil {
+	err = scanner.Err()
+	if err != nil {
 		results <- fmt.Sprintf("Error reading file %s: %v\n", filename, err)
 	}
 }
@@ -83,7 +84,8 @@ func searchStdin(pattern string) {
 		lineNum++
 	}
 
-	if err := scanner.Err(); err != nil {
+	err := scanner.Err()
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error reading stdin: %v\n", err)
 	}
 }
