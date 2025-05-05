@@ -31,10 +31,10 @@ func main() {
 	// Search in provided files concurrently
 	for _, filename := range flag.Args() {
 		wg.Add(1)
-		go func(file string) {
+		go func() {
 			defer wg.Done()
-			searchFileParallel(*pattern, file, results)
-		}(filename)
+			searchFileParallel(*pattern, filename, results)
+		}()
 	}
 
 	// Close results channel when all searches are done
