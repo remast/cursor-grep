@@ -1,3 +1,3 @@
-module jax-simple-grep
+module jax/gogrep
 
 go 1.24.2
