@@ -47,7 +47,8 @@ func searchFile(pattern, filename string) {
 		lineNum++
 	}
 
-	if err := scanner.Err(); err != nil {
+	err = scanner.Err()
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error reading file %s: %v\n", filename, err)
 	}
 }
@@ -63,7 +64,8 @@ func searchStdin(pattern string) {
 		lineNum++
 	}
 
-	if err := scanner.Err(); err != nil {
+	err := scanner.Err()
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error reading stdin: %v\n", err)
 	}
 }
