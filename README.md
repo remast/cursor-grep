@@ -10,4 +10,6 @@ go run main.go -pattern "fox" sample1.txt sample2.txt
 
 # Read from standard in
 cat sample1.txt | go run main.go -pattern "fox"
+
+go run main.go -pattern=dog.$ -regex=true sample1.txt 
 ```
