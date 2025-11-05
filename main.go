@@ -30,6 +30,8 @@ func main() {
 
 	// Search in provided files concurrently
 	for _, filename := range flag.Args() {
+		// Alternativ
+		// wg.Go( func())
 		wg.Add(1)
 		go func() {
 			defer wg.Done()

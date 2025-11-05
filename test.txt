@@ -1,0 +1,6 @@
+Hello World
+This is a test file
+Testing grep functionality
+Hello again
+Another line
+Testing case sensitivity 
